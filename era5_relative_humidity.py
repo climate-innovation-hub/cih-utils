@@ -47,8 +47,8 @@ def hurs_from_dewpoint(da_temperature, da_dewpoint, outvar):
 def regrid_to_agcd(input_ds, var):
     """Regrid to the AGCD grid"""
     
-    lats = np.round(np.arange(-44.5, -9.99, 0.05), decimals=1)
-    lons = np.round(np.arange(112, 156.26, 0.05), decimals=1)
+    lats = np.round(np.arange(-44.5, -9.99, 0.05), decimals=2)
+    lons = np.round(np.arange(112, 156.26, 0.05), decimals=2)
     agcd_grid = xcdat.create_grid(lats, lons)
     
     output_ds = input_ds.regridder.horizontal(
@@ -70,13 +70,11 @@ def main(args):
 
     ds_temperature = xcdat.open_mfdataset(args.temperature_files)
     ds_temperature = ds_temperature.rename({'latitude': 'lat', 'longitude': 'lon'})
-    ds_temperature = ds_temperature.reindex(lat=ds_temperature['lat'][::-1])
-    ds_temperature = ds_temperature.sel({'lat': slice(-45, -9), 'lon': slice(111, 157)})
+    ds_temperature = ds_temperature.sel({'lat': slice(-9, -45), 'lon': slice(111, 157)})
 
     ds_dewpoint = xcdat.open_mfdataset(args.dewpoint_files)
     ds_dewpoint = ds_dewpoint.rename({'latitude': 'lat', 'longitude': 'lon'})
-    ds_dewpoint = ds_dewpoint.reindex(lat=ds_dewpoint['lat'][::-1])
-    ds_dewpoint = ds_dewpoint.sel({'lat': slice(-45, -9), 'lon': slice(111, 157)})
+    ds_dewpoint = ds_dewpoint.sel({'lat': slice(-9, -45), 'lon': slice(111, 157)})
 
     ds_rh = hurs_from_dewpoint(ds_temperature['t2m'], ds_dewpoint['d2m'], args.outvar)
     ds_rh = regrid_to_agcd(ds_rh, args.outvar)
@@ -84,7 +82,7 @@ def main(args):
     ds_rh.attrs['history'] = cmdprov.new_log()
     ds_rh.to_netcdf(
         args.outfile,
-        encoding={args.outvar: {'least_significant_digit': 2, 'zlib': True}}
+#        encoding={args.outvar: {'least_significant_digit': 2, 'zlib': True}}
     )
 
 
