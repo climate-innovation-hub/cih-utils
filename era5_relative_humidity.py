@@ -55,7 +55,7 @@ def regrid_to_agcd(input_ds, var):
         var,
         agcd_grid,
         tool='xesmf',
-        method='conservative'
+        method='bilinear'
     )
     output_ds['lat'].attrs['long_name'] = 'Latitude'
     output_ds['lat'].attrs['standard_name'] = 'latitude'
