@@ -58,7 +58,7 @@ def main(args):
     ds_out.attrs['history'] = cmdprov.new_log()
     ds_out.to_netcdf(
         args.outfile,
-#        encoding={args.outvar: {'least_significant_digit': 2, 'zlib': True}}
+        encoding={args.var: {'least_significant_digit': 2, 'zlib': True}}
     )
 
 
