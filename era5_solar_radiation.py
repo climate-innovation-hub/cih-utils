@@ -52,8 +52,8 @@ def main(args):
     ds_in = ds_in.rename({'latitude': 'lat', 'longitude': 'lon'})
     ds_in = ds_in.sel({'lat': slice(-9, -45), 'lon': slice(111, 157)})
 
-    ds_out = regrid_to_agcd(ds_in, args.var)
-    ds_out = ds_out.resample(time='D').mean('time', keep_attrs=True)
+    ds_out = ds_in.resample(time='D').sum('time', keep_attrs=True)
+    ds_out = regrid_to_agcd(ds_out, args.var)
     ds_out[args.var] = joules_to_watts(ds_out[args.var])
     ds_out.attrs['history'] = cmdprov.new_log()
     ds_out.to_netcdf(
